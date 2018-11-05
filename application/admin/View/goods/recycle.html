@@ -1,0 +1,107 @@
+{extend name="public:base" /}
+{block name="body"}
+<div class="form-div">
+    <form action="" name="searchForm">
+        <img src="__ADMIN__Images/icon_search.gif" width="26" height="22" border="0" alt="search" />
+        <!-- 分类 -->
+        <select name="cate_id">
+            <option value="0">所有分类</option>
+            {volist name="category" id="vo"}
+            <option value="{$vo.id}">{$vo.lev|str_repeat='&nbsp;&nbsp;',###}{$vo.cname}</option>
+            {/volist}  
+        </select>
+
+        <!-- 推荐 -->
+        <select name="intro_type">
+            <option value="0">全部</option>
+            <option value="is_rec">推荐</option>
+            <option value="is_new">新品</option>
+            <option value="is_hot">热销</option>
+        </select>
+        <!-- 上架 -->
+        <select name="is_sale">
+            <option value='0'>全部</option>
+            <option value="2">上架</option>
+            <option value="1">下架</option>
+        </select>
+        <!-- 关键字 -->
+        关键字 <input type="text" name="keyword" size="15" />
+        <input type="submit" value=" 搜索 " class="button" />
+    </form>
+</div>
+
+<!-- 商品列表 -->
+
+    <div class="list-div" id="listDiv">
+        <table cellpadding="3" cellspacing="1">
+            <tr>
+                <th>编号</th>
+                <th>商品名称</th>
+                <th>所属分类</th>
+                <th>货号</th>
+                <th>价格</th>
+                <th>上架</th>
+                <th>推荐</th>
+                <th>新品</th>
+                <th>热销</th>
+                <th>操作</th>
+            </tr>
+            {volist name="data" id="vo"}
+        <tr>
+            <td align="center">{$vo.id}</td>
+            <td align="center" class="first-cell">{$vo.goods_name}</td>
+            <td align="center">{$vo.cname}</td>
+            <td align="center">{$vo.goods_sn}</td>
+            <td align="center">{$vo.shop_price}</td>
+            <td align="center"><img src="__ADMIN__Images/{eq name='$vo.is_sale' value='1'}yes{else}no{/eq}.gif" onclick="changeStatus(this,{$vo:id},'is_sale')" /></td>
+            <td align="center"><img src="__ADMIN__Images/{eq name='$vo.is_rec' value='1'}yes{else}no{/eq}.gif " onclick="changeStatus(this,{$vo:id},'is_rec')"/></td>
+            <td align="center"><img src="__ADMIN__Images/{eq name='$vo.is_new' value='1'}yes{else}no{/eq}.gif " onclick="changeStatus(this,{$vo:id},'is_new')"/></td>
+            <td align="center"><img src="__ADMIN__Images/{eq name='$vo.is_hot' value='1'}yes{else}no{/eq}.gif " onclick="changeStatus(this,{$vo:id},'is_hot')"/></td>
+            <td align="center">
+            <a href="{:url('restore','id='.$vo['id'])}" title="还原">还原</a>
+            <a href="{:url('remove','id='.$vo['id'])}" onclick="" title="彻底删除">彻底删除</a>
+        </td>
+        </tr>
+        {/volist}
+    </table>
+    <style type="text/css">
+        .pagination li{ width: 50px; float: left; margin: 0 5px; }
+        .pagination li{list-style: none}
+    </style>
+    <!-- 分页开始 -->
+    <table id="page-table" cellspacing="0">
+        <tr>
+            <td width="80%">{$data->render()}</td>
+            <td align="center" nowrap="true">
+                
+            </td>
+        </tr>
+    </table>
+<!-- 分页结束 -->
+</div>
+{/block}
+
+{block name="js"}
+    <script type="text/javascript">
+        function changeStatus(obj,goods_id,field){
+            $.ajax({
+                url:"{:url('changeStatus')}",
+                data:{goods_id:goods_id,field:field},
+                dataType:'json',
+                type:'post',
+                success:function(data){
+                    if (data.status==0) {
+                        alert(data.msg);
+                        return;
+                    }
+                    //将图片替换
+                    if (data.goods_status==1) {
+                        $(obj).attr('src','__ADMIN__Images/yes.gif');
+                    }else{
+                        $(obj).attr('src','__ADMIN__Images/no.gif');
+                    }
+                }   
+            });
+        }
+    </script>
+    {/block}

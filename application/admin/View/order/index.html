@@ -1,0 +1,49 @@
+{extend name="public:base" /}
+{block name="body"}
+<div class="list-div" id="listDiv">
+    <table width="100%" cellspacing="1" cellpadding="2" id="list-table">
+        <tr>
+            <th>序号</th>
+            <th>下单用户</th>
+            <th>支付方式</th>
+            <th>支付状态</th>
+            <th>订单状态</th>
+            <th>操作</th>
+        </tr> 
+        {volist name="data" id="vo"}      
+        <tr align="center" class="0">
+            <td >{$vo.id}</td>
+            <td >{$vo.username}</td>
+            <td >
+            {if condition="$vo.pay eq 1"}
+            货到付款
+            {elseif condition="$vo.pay eq 2"}
+            支付宝
+            {elseif condition="$vo.pay eq 3"}
+            微信
+            {/if}
+            </td>
+            <td >
+            {eq name="$vo.pay_status" value="1"}已支付{else/}未支付{/eq}
+            </td>
+            <td >
+            {if condition="$vo.order_status eq 0"}
+            下单
+            {elseif condition="$vo.order_status eq 1"}
+            审核通过
+            {elseif condition="$vo.order_status eq 2"}
+            已经支付
+            {elseif condition="$vo.order_status eq 3"}
+            已发货
+            {/if}
+            </td>
+            <td width="30%" align="center">
+            {gt name="$vo.id" value="1"}
+            <a href="{:url('send','id='.$vo['id'])}">发货</a>
+            {/gt}
+            </td>
+        </tr>
+        {/volist}   
+    </table>
+</div>
+{/block}

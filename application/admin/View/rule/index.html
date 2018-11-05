@@ -1,0 +1,29 @@
+{extend name="public:base" /}
+{block name="body"}
+
+<div class="list-div" id="listDiv">
+    <table cellpadding="3" cellspacing="1">
+        <tr>
+            <th>编号</th>
+            <th>权限名称</th>
+            <th>控制器名称</th>
+            <th>方法名称</th>
+            <th>是否导航显示</th>
+            <th>操作</th>
+        </tr>
+        {volist name="data" id="vo"}
+        <tr>
+            <td align="center">{$vo.id}</td>
+            <td align="center">{$vo.rule_name}</td>
+            <td align="center">{$vo.controller_name}</td>
+            <td align="center">{$vo.action_name}</td>
+            <td align="center">{eq name="vo.is_show" value="1"}显示{else/}不显示{/eq}</td>
+            <td align="center">
+            <a href="{:url('edit','id='.$vo['id'])}" title="编辑"><img src="__ADMIN__Images/icon_edit.gif" width="16" height="16" border="0" /></a>
+            <a href="{:url('del','id='.$vo['id'])}" onclick="" title="回收站"><img src="__ADMIN__Images/icon_trash.gif" width="16" height="16" border="0" /></a></td>
+        </tr>
+        {/volist}
+    </table>
+
+</div>
+{/block}
